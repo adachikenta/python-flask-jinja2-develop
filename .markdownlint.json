@@ -1,0 +1,9 @@
+{
+  "MD033": {
+    "allowed_elements": ["details", "summary", "br", "hr"]
+  },
+  "MD013": {
+    "code_blocks": false,
+    "tables": false
+  }
+}

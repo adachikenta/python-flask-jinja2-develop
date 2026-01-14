@@ -1,0 +1,16 @@
+.pytest_cache/
+__data__/
+__pycache__/
+**/__pycache__/
+__tests__/
+__cov__/
+instance/
+node_modules/
+venv/
+playwright-report/
+*.pyc
+*.pyo
+*.bak
+*.mo
+*.coverage
+.coverage.*

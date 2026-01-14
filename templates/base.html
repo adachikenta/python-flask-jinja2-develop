@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="{{ CURRENT_LANGUAGE }}">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{{ _('system') }}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% if current_user.is_authenticated %}
+    <script src="{{ url_for('static', filename='js/session-countdown.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/inactivity-blur.js') }}"></script>
+    {% endif %}
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <div class="topbar">
+        <div class="topbar-left">
+            <a href="/" class="logo">{{ _('system') }}</a>
+            {% if current_user.is_authenticated %}
+                <a href="/">{{ _('home') }}</a>
+                <a href="/page">{{ _('page') }}</a>
+                {% if current_user.has_role('admin') %}
+                    <a href="/security_logs">{{ _('security_logs') }}</a>
+                    <a href="/role_user">{{ _('permission_management') }}</a>
+                {% endif %}
+            {% endif %}
+        </div>
+        <div class="topbar-right">
+            {% if current_user.is_authenticated %}
+                <span id="topbar-countdown" class="topbar-countdown"></span>
+                <button id="topbar-lock-button" class="topbar-button" onclick="lockSessionNow()">{{ _('lock_now') }}</button>
+                <a href="/change_password" class="topbar-button">{{ _('change_password') }}</a>
+                <a href="/logout" class="topbar-button">{{ _('logout') }}</a>
+                <a href="/foss_license">{{ _('foss_license') }}</a>
+                <a href="/privacy_policy">{{ _('privacy_policy') }}</a>
+            {% endif %}
+            <form action="{{ url_for('set_language') }}" method="post" class="language-form">
+                <select id="language" name="language" onchange="this.form.submit()">
+                    {% for key, value in AVAILABLE_LANGUAGES.items() %}
+                    <option value="{{key}}" {% if key == CURRENT_LANGUAGE %}selected{% endif %}>{{value}}</option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+    </div>
+    
+    <div class="content">
+        {% if not current_user.is_authenticated %}
+        <div class="login-info">
+            <h3>{{ _('poc_id_password') }}</h3>
+            <p>🙍 user / User999! - {{ _('force_initial_password_change') }}, {{ _('password_expiry_1day') }}</p>
+            <p>🙍 admin / Admin999! - {{ _('no_password_expiry') }}</p>
+            <h3>{{ _('about_lockout') }}</h3>
+            <p>{{ _('lockout_after_3_failures') }} / {{ _('lockout_period_10min') }}</p>
+            <h3>{{ _('communication_session_lock') }}</h3>
+            <p>{{ _('auto_lock_30min') }} / {{ _('manual_lock_button_available') }}</p>
+        </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </div>
+    {% block body_end %}{% endblock %}
+</body>
+</html>

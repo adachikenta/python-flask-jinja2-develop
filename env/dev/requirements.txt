@@ -1,0 +1,8 @@
+black
+isort
+pylint
+pytest
+pytest-cov
+pytest-html
+pytest-playwright
+playwright

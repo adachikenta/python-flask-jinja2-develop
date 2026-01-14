@@ -1,0 +1,10 @@
+Flask
+Flask-WTF
+Flask-Security-Too
+Flask-Session
+Flask-Babel
+Flask-SQLAlchemy
+argon2_cffi
+plotly
+folium
+pandas

@@ -1,0 +1,192 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2025-01-01 00:00+0900\n"
+"PO-Revision-Date: 2025-01-01 00:00+0900\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.14.0\n"
+
+# Session countdown strings
+msgid "session_remaining_time"
+msgstr "Session Time Remaining"
+
+msgid "lock_now"
+msgstr "Lock Now 🔒"
+
+msgid "change_password"
+msgstr "Change Password"
+
+msgid "logout"
+msgstr "Logout"
+
+#: templates/base.html
+msgid "system"
+msgstr "System Name"
+
+#: templates/base.html
+msgid "common"
+msgstr "Common"
+
+#: templates/base.html
+msgid "home"
+msgstr "Home"
+
+#: templates/base.html
+msgid "page"
+msgstr "Page"
+
+#: templates/base.html
+msgid "security_logs"
+msgstr "Security Logs"
+
+#: templates/base.html
+msgid "admin_menu"
+msgstr "Administrator Menu"
+
+#: templates/base.html
+msgid "permission_management"
+msgstr "Permission Management"
+
+#: templates/base.html
+msgid "legal_information"
+msgstr "Legal Information"
+
+#: templates/base.html
+msgid "foss_license"
+msgstr "Open Source License"
+
+#: templates/base.html
+msgid "privacy_policy"
+msgstr "Privacy Policy"
+
+#: templates/base.html
+msgid "debug_menu"
+msgstr "Debug Menu"
+
+#: templates/base.html
+msgid "developer_sandbox"
+msgstr "Developer Sandbox"
+
+#: templates/base.html
+msgid "poc_id_password"
+msgstr "PoC ID / Password"
+
+#: templates/base.html
+msgid "force_initial_password_change"
+msgstr "Force initial pass change"
+
+#: templates/base.html
+msgid "password_expiry_1day"
+msgstr "Password expiry: 1 day"
+
+#: templates/base.html
+msgid "no_password_expiry"
+msgstr "No password expiry"
+
+#: templates/base.html
+msgid "about_lockout"
+msgstr "About Lockout"
+
+#: templates/base.html
+msgid "lockout_after_3_failures"
+msgstr "Lockout after 3 failures"
+
+#: templates/base.html
+msgid "lockout_period_10min"
+msgstr "Lockout period: 10 minutes"
+
+#: templates/base.html
+msgid "communication_session_lock"
+msgstr "Communication Session Lock"
+
+#: templates/base.html
+msgid "auto_lock_30min"
+msgstr "Auto lock after 30 minutes"
+
+#: templates/base.html
+msgid "manual_lock_button_available"
+msgstr "Manual lock button available"
+
+#: templates/base.html:22 templates/wait.html
+msgid "version"
+msgstr "AppVersion"
+
+#: templates/base.html:60 templates/error.html:9 templates/error.html
+#, fuzzy
+msgid "error_title"
+msgstr "Error Info"
+
+#: templates/base.html:63 templates/license.html:9 templates/license.html
+#, fuzzy
+msgid "license_title"
+msgstr "License Information"
+
+#: templates/base.html:69 templates/chg_pass.html:9 templates/chg_pass.html
+msgid "change_pass_title"
+msgstr "Change Password"
+
+#: templates/base.html:80 templates/index.html:626 templates/shutdown.html
+#, fuzzy
+msgid "auth_notes"
+msgstr "An administrator username and password will be required."
+
+#: templates/base.html
+#, fuzzy
+msgid "special_auth_notes"
+msgstr "A special administrator username and password will be required."
+
+#: templates/chg_pass.html:8 templates/debug.html:8 templates/download.html
+#: templates/error.html:8 templates/fail.html:8 templates/index.html
+#: templates/license.html:8 templates/shutdown.html:8 templates/success.html
+msgid "top_title"
+msgstr "Top"
+
+#: templates/chg_pass.html:19 templates/index.html
+#, fuzzy
+msgid "error_occur_item"
+msgstr "Error occurrence item"
+
+#: templates/chg_pass.html
+msgid "new_pass"
+msgstr "New Password"
+
+#: templates/chg_pass.html:27 templates/chg_pass.html
+#: templates/index.html
+#, fuzzy
+msgid "input_pass"
+msgstr "Password"
+
+#: templates/chg_pass.html:30 templates/chg_pass.html
+msgid "word"
+msgstr " characters"
+
+#: templates/chg_pass.html:33 templates/chg_pass.html
+msgid "confirm_pass"
+msgstr "New Password For Confirmation"
+
+#: templates/chg_pass.html
+msgid "pass_notes"
+msgstr "Password set 8 to 64 alphanumeric characters, symbol which exclude spaces."
+
+#: templates/chg_pass.html
+msgid "confirm_notes"
+msgstr "Please enter the \"New Password\" again to avoid entering it incorrectly."
+
+#: templates/chg_pass.html
+msgid "change"
+msgstr "change"
+
+#: templates/debug.html:9 templates/debug.html
+#, fuzzy
+msgid "debug_title"
+msgstr "Debugging process control"
+
+#: templates/error.html:19 templates/index.html
+msgid "time"
+msgstr "Time"
+
