@@ -3,6 +3,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+Write-Host "`nStarting application..." -ForegroundColor Cyan
 
 $checkVenvScript = Join-Path $PSScriptRoot "check_venv.ps1"
 
@@ -27,14 +28,17 @@ if (-not (Test-Path $PythonScript)) {
 }
 
 # Run the application
+$appResult = 0
 try {
     Write-Host "Starting Python script: $PythonScript" -ForegroundColor Green
     python $PythonScript
     $appResult = $LASTEXITCODE
 } catch {
+    $appResult = $LASTEXITCODE
     Write-Host "Error: $_" -ForegroundColor Red
-    $appResult = 1
+    Write-Host "Stack trace: $($_.ScriptStackTrace)" -ForegroundColor Red
 } finally {
+    # Deactivate virtual environment
     if (Get-Command "deactivate" -ErrorAction SilentlyContinue) {
         Write-Host "Deactivating virtual environment..." -ForegroundColor Yellow
         deactivate

@@ -1,7 +1,7 @@
 $ErrorActionPreference = "Stop"
+Write-Host "`nStarting setup virtual environment..." -ForegroundColor Cyan
 
 $checkVenvScript = Join-Path $PSScriptRoot "check_venv.ps1"
-
 # Run common validation and activate venv
 Write-Host "Validating Python environment..." -ForegroundColor Yellow
 & $checkVenvScript -ActivateVenv
@@ -10,6 +10,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # Install required packages inside the activated venv
+$setupResult = 0
 try {
 
     # Check pip in venv
@@ -17,49 +18,46 @@ try {
 
     # Get pip path and version
     $pipPath = python -c "import sys; import os; print(os.path.join(sys.prefix, 'Scripts', 'pip.exe'))" 2>&1
-
     if (Test-Path $pipPath) {
         Write-Host "pip is installed in venv at: $pipPath" -ForegroundColor Green
-
-        # Get pip version
-        $pipVersion = & $pipPath --version 2>&1
-        Write-Host "pip version: $pipVersion" -ForegroundColor Green
     } else {
         # install pip using ensurepip
         Write-Host "pip is not found in venv. Installing pip..." -ForegroundColor Yellow
         python -m ensurepip --upgrade
-        if ($LASTEXITCODE -ne 0) {
+        $setupResult = $LASTEXITCODE
+        if ($setupResult -ne 0) {
             throw "Failed to install pip"
         }
-
         # Verify installation
         if (Test-Path $pipPath) {
             $pipVersion = & $pipPath --version 2>&1
             Write-Host "pip installed successfully at: $pipPath" -ForegroundColor Green
-            Write-Host "pip version: $pipVersion" -ForegroundColor Green
         } else {
             throw "pip installation completed but executable not found"
         }
     }
+    # Get pip version
+    $pipVersion = & $pipPath --version 2>&1
+    Write-Host "pip version: $pipVersion" -ForegroundColor Green
 
     # upgrade pip to the latest version
     Write-Host "Upgrading pip to the latest version..." -ForegroundColor Yellow
     python -m pip install --upgrade pip --quiet
-    if ($LASTEXITCODE -eq 0) {
-        Write-Host "pip upgraded successfully." -ForegroundColor Green
-    } else {
-        Write-Host "Warning: pip upgrade had issues but continuing..." -ForegroundColor Yellow
+    $setupResult = $LASTEXITCODE
+    if ($setupResult -ne 0) {
+        throw "Failed to upgrade pip"
     }
+    Write-Host "pip upgraded successfully." -ForegroundColor Green
 
     # install the required packages from requirements.txt
     if (Test-Path "requirements.txt") {
         Write-Host "Installing required packages for application from requirements.txt..." -ForegroundColor Yellow
         pip install -r requirements.txt
-        if ($LASTEXITCODE -eq 0) {
-            Write-Host "Application packages installed successfully." -ForegroundColor Green
-        } else {
+        $setupResult = $LASTEXITCODE
+        if ($LASTEXITCODE -ne 0) {
             throw "Failed to install packages from requirements.txt"
         }
+        Write-Host "Application packages installed successfully." -ForegroundColor Green
     } else {
         Write-Host "Warning: requirements.txt not found, skipping..." -ForegroundColor Yellow
     }
@@ -68,11 +66,11 @@ try {
     if (Test-Path "./env/dev/requirements.txt") {
         Write-Host "Installing required packages for tests from ./env/dev/requirements.txt..." -ForegroundColor Yellow
         pip install -r ./env/dev/requirements.txt
-        if ($LASTEXITCODE -eq 0) {
-            Write-Host "Test packages installed successfully." -ForegroundColor Green
-        } else {
+        $setupResult = $LASTEXITCODE
+        if ($LASTEXITCODE -ne 0) {
             throw "Failed to install packages from ./env/dev/requirements.txt"
         }
+        Write-Host "Test packages installed successfully." -ForegroundColor Green
     } else {
         Write-Host "Warning: ./env/dev/requirements.txt not found, skipping..." -ForegroundColor Yellow
     }
@@ -81,15 +79,8 @@ try {
     Write-Host "Checking for Playwright installation..." -ForegroundColor Yellow
 
     # Temporarily allow errors for the import check
-    $previousErrorAction = $ErrorActionPreference
-    $ErrorActionPreference = "Continue"
-
     $playwrightCheck = python -c "import playwright; print('installed')" 2>&1
     $playwrightInstalled = ($LASTEXITCODE -eq 0) -and ($playwrightCheck -match "installed")
-
-    # Restore error action preference
-    $ErrorActionPreference = $previousErrorAction
-
     if ($playwrightInstalled) {
         Write-Host "Playwright found. Installing Playwright browsers..." -ForegroundColor Yellow
 
@@ -120,17 +111,23 @@ try {
     }
 }
 catch {
-    Write-Host "An error occurred during setup: $_" -ForegroundColor Red
+    $setupResult = $LASTEXITCODE
+    Write-Host "Error: $_" -ForegroundColor Red
     Write-Host "Stack trace: $($_.ScriptStackTrace)" -ForegroundColor Red
-    exit 1
 }
 finally {
-    # Deactivate if still active
+    # Deactivate virtual environment
     if (Get-Command deactivate -ErrorAction SilentlyContinue) {
         Write-Host "Deactivating virtual environment..." -ForegroundColor Yellow
         deactivate
     }
+    if ($setupResult -eq 0) {
+        Write-Host "Virtual environment setup completed successfully!" -ForegroundColor Green
+        Write-Host "You can now run the application." -ForegroundColor Green
+        exit 0
+    } else {
+        Write-Host "Virtual environment setup failed. Exit code: $setupResult" -ForegroundColor Red
+        exit $setupResult
+    }
 }
 
-Write-Host "`nVirtual environment setup completed successfully!" -ForegroundColor Green
-Write-Host "You can now run the application." -ForegroundColor Green

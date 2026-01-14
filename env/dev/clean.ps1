@@ -1,4 +1,5 @@
 $ErrorActionPreference = "Stop"
+Write-Host "`nStarting clean up repository..." -ForegroundColor Cyan
 
 # Function to find git executable
 function Get-GitExecutable {
@@ -15,7 +16,7 @@ function Get-GitExecutable {
             Write-Host "Found git at $path via Scoop." -ForegroundColor Green
             # git version
             $version = & $path --version 2>&1
-            Write-Host $version -ForegroundColor Cyan
+            Write-Host $version -ForegroundColor Green
             return $path
         }
     }

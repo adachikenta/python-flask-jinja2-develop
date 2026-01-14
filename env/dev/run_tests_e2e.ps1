@@ -1,10 +1,12 @@
 # PowerShell script to run the tests with the Flask app running in the background
 
 $ErrorActionPreference = "Stop"
-$appProcess = $null
+Write-Host "`nStarting end-to-end tests run..." -ForegroundColor Cyan
+
 $reportPath = Join-Path -Path (Get-Location) -ChildPath "__tests__/report_e2e.html"
 $checkVenvScript = Join-Path $PSScriptRoot "check_venv.ps1"
 
+$flaskAppProcess = $null
 function Start-FlaskApp {
     Write-Host "Starting Flask application in the background..." -ForegroundColor Green
 
@@ -31,7 +33,7 @@ function Start-FlaskApp {
     }
 
     # Start Flask app using python command (venv is already activated)
-    $appProcess = Start-Process -FilePath "python" -ArgumentList "app.py" -PassThru
+    $flaskAppProcess = Start-Process -FilePath "python" -ArgumentList "app.py" -PassThru
 
     # Wait for app to initialize (checking if the server is up)
     Write-Host "Waiting for Flask app to initialize..." -ForegroundColor Yellow
@@ -60,7 +62,7 @@ function Start-FlaskApp {
     # Give a bit more time for app to fully initialize
     Start-Sleep -Seconds 2
 
-    return $appProcess
+    return $flaskAppProcess
 }
 
 function Stop-FlaskApp {
@@ -122,22 +124,22 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-# E2E Testing
+# Run the tests with coverage
+$testResult = 0
 try {
-    # Start Flask app if running E2E tests
-    $appProcess = Start-FlaskApp
-
+    # Start the Flask app
+    $flaskAppProcess = Start-FlaskApp
+    Write-Host "Running tests with coverage..." -ForegroundColor Yellow
     pytest ./tests/e2e_playwright.py -v --html=$reportPath
-
     $testResult = $LASTEXITCODE
-
 } catch {
+    $testResult = $LASTEXITCODE
     Write-Host "Error: $_" -ForegroundColor Red
-    $testResult = 1
+    Write-Host "Stack trace: $($_.ScriptStackTrace)" -ForegroundColor Red
 } finally {
-    # Clean up
-    if ($appProcess -and -not $appProcess.HasExited) {
-        Stop-FlaskApp -Process $appProcess
+    # Stop the Flask app
+    if ($flaskAppProcess -and -not $flaskAppProcess.HasExited) {
+        Stop-FlaskApp -Process $flaskAppProcess
     }
 
     # Additional cleanup to ensure all related processes are terminated
@@ -169,15 +171,16 @@ try {
     }
 
     if ($testResult -eq 0) {
-        Write-Host "Tests completed successfully!" -ForegroundColor Green
+        if (Test-Path -Path $reportPath) {
+            Start-Process $reportPath
+            Write-Host "Tests completed successfully!" -ForegroundColor Green
+            exit 0
+        } else {
+            Write-Host "Test report not found: $reportPath" -ForegroundColor Red
+            exit 1
+        }
     } else {
         Write-Host "Tests failed or had errors. Exit code: $testResult" -ForegroundColor Red
+        exit $testResult
     }
-
-    Write-Host "Done!" -ForegroundColor Green
-    if (Test-Path -Path $reportPath) {
-        Start-Process $reportPath
-    }
-    # Exit with the actual test result code
-    exit $testResult
 }

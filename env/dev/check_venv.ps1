@@ -3,6 +3,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+
 $venvPath = ".\venv"
 $pythonVersion = "python312"
 $pythonVersionNumber = "3.12"
@@ -13,8 +14,8 @@ function Test-PythonInstalled {
     if (-not (Test-Path $pythonPath)) {
         Write-Host "Python $pythonVersion is not installed at: $pythonPath" -ForegroundColor Red
         Write-Host "Please run the following commands to set up the environment:" -ForegroundColor Yellow
-        Write-Host "  1. _clean.bat" -ForegroundColor Cyan
-        Write-Host "  2. _setup.bat" -ForegroundColor Cyan
+        Write-Host "  1. _clean.bat" -ForegroundColor Magenta
+        Write-Host "  2. _setup.bat" -ForegroundColor Magenta
         return $false
     }
     Write-Host "Python $pythonVersion is installed at: $pythonPath" -ForegroundColor Green
@@ -26,8 +27,8 @@ function Test-VenvExists {
     if (-not (Test-Path $venvPath)) {
         Write-Host "Virtual environment does not exist at: $venvPath" -ForegroundColor Red
         Write-Host "Please run the following commands to set up the environment:" -ForegroundColor Yellow
-        Write-Host "  1. _clean.bat" -ForegroundColor Cyan
-        Write-Host "  2. _setup.bat" -ForegroundColor Cyan
+        Write-Host "  1. _clean.bat" -ForegroundColor Magenta
+        Write-Host "  2. _setup.bat" -ForegroundColor Magenta
         return $false
     }
 
@@ -35,8 +36,8 @@ function Test-VenvExists {
     if (-not (Test-Path $activateScript)) {
         Write-Host "Virtual environment activation script not found. Venv may be corrupted." -ForegroundColor Red
         Write-Host "Please run the following commands to set up the environment:" -ForegroundColor Yellow
-        Write-Host "  1. _clean.bat" -ForegroundColor Cyan
-        Write-Host "  2. _setup.bat" -ForegroundColor Cyan
+        Write-Host "  1. _clean.bat" -ForegroundColor Magenta
+        Write-Host "  2. _setup.bat" -ForegroundColor Magenta
         return $false
     }
 

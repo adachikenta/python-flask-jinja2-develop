@@ -1,4 +1,6 @@
 $ErrorActionPreference = "Stop"
+Write-Host "`nStarting setup base environment..." -ForegroundColor Cyan
+
 $venvPath = ".\venv"
 $pythonVersion = "python312"
 
@@ -121,10 +123,7 @@ catch {
 
 # check versions bucket
 Write-Host "Checking versions bucket..." -ForegroundColor Yellow
-$previousErrorAction = $ErrorActionPreference
-$ErrorActionPreference = "Continue"
 $buckets = scoop bucket list 2>&1 | Out-String
-$ErrorActionPreference = $previousErrorAction
 
 if ($buckets -match "versions") {
     Write-Host "versions bucket is already added." -ForegroundColor Green
@@ -138,9 +137,7 @@ if ($buckets -match "versions") {
 
         # Verify the bucket was added
         Start-Sleep -Seconds 2
-        $ErrorActionPreference = "Continue"
         $bucketsAfter = scoop bucket list 2>&1 | Out-String
-        $ErrorActionPreference = "Stop"
 
         if ($bucketsAfter -notmatch "versions") {
             throw "versions bucket was not found after installation"

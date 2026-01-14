@@ -1,4 +1,5 @@
 $ErrorActionPreference = "Stop"
+Write-Host "`nStarting translation file conversion..." -ForegroundColor Cyan
 
 $translations = ".\translations"
 
@@ -9,6 +10,7 @@ if (-not (Test-Path $translations)) {
 }
 
 # Convert .po files to .mo files
+$convertResult = 0
 try {
     Write-Host "Processing translation files..." -ForegroundColor Yellow
     $processedCount = 0
@@ -19,9 +21,10 @@ try {
         $mo = $po -replace '\.po$', '.mo'
 
         if (!(Test-Path $mo) -or ((Get-Item $po).LastWriteTime -gt (Get-Item $mo).LastWriteTime)) {
-            Write-Host "Converting $po -> $mo" -ForegroundColor Cyan
+            Write-Host "Converting $po -> $mo" -ForegroundColor Yellow
             & msgfmt -o $mo $po
-            if ($LASTEXITCODE -ne 0) {
+            $convertResult = $LASTEXITCODE
+            if ($convertResult -ne 0) {
                 throw "Failed to convert $po to $mo"
             }
             $processedCount++
@@ -30,12 +33,15 @@ try {
             $skippedCount++
         }
     }
-
-    Write-Host "`nTranslation files processed successfully." -ForegroundColor Green
-    Write-Host "Converted: $processedCount, Skipped: $skippedCount" -ForegroundColor Green
-    exit 0
 } catch {
-    Write-Host "Error processing translation files: $_" -ForegroundColor Red
+    $convertResult = $LASTEXITCODE
+    Write-Host "Error: $_" -ForegroundColor Red
     Write-Host "Stack trace: $($_.ScriptStackTrace)" -ForegroundColor Red
-    exit 1
+} finally {
+    if ($convertResult -eq 0) {
+        Write-Host "Translation file conversion completed successfully!" -ForegroundColor Green
+        Write-Host "Converted: $processedCount, Skipped: $skippedCount" -ForegroundColor Green
+    } else {
+        Write-Host "Translation file conversion failed. Exit code: $convertResult" -ForegroundColor Red
+    }
 }
