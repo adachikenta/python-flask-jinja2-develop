@@ -79,8 +79,10 @@ try {
     Write-Host "Checking for Playwright installation..." -ForegroundColor Yellow
 
     # Temporarily allow errors for the import check
+    $ErrorActionPreference = "Continue"
     $playwrightCheck = python -c "import playwright; print('installed')" 2>&1
     $playwrightInstalled = ($LASTEXITCODE -eq 0) -and ($playwrightCheck -match "installed")
+    $ErrorActionPreference = "Stop"
     if ($playwrightInstalled) {
         Write-Host "Playwright found. Installing Playwright browsers..." -ForegroundColor Yellow
 
